@@ -26,6 +26,18 @@ Protótipo do loop de aura:
 6. Para o DataStore funcionar no Studio: publique o place e ative *Game Settings > Security > Enable Studio Access to API Services*. Sem isso o jogo roda com dados em memória e avisa no Output.
 7. Aperte Play.
 
+### Ver o mapa no modo Edit
+
+Os lotes e a praça são criados pelo código quando o jogo roda. Para eles ficarem salvos no place (e você poder
+decorar), rode uma vez na Command Bar do Studio (View > Command Bar) e depois salve o place:
+
+```lua
+require(game.ServerScriptService.Server.PlotBuilder).build(workspace)
+```
+
+Com `Workspace.Plots` salvo no place, o servidor usa esse mapa em vez de gerar outro. Se o código do PlotBuilder
+mudar, apague `Workspace.Plots` e `Workspace.Plaza` e rode o comando de novo.
+
 ## Testar o roubo com 2 jogadores
 
 1. No Studio, selecione o Workspace e adicione o atributo booleano `TesteSemEscudo` marcado (desliga o escudo de iniciante de 15 min só no Studio).
