@@ -19,6 +19,10 @@ export type State = {
 	ratePerSecond: number,
 	generatorLevel: number,
 	upgradeCost: number?,
+	powers: { [string]: number },
+	hasShield: boolean,
+	gateUntil: number,
+	gateReadyAt: number,
 }
 
 local Hud = {}
@@ -45,7 +49,12 @@ local function label(parent: Instance, name: string, order: number, size: number
 	return l
 end
 
-function Hud.create(onUpgrade: () -> ())
+local function clock(seconds: number): string
+	local s = math.ceil(seconds)
+	return string.format("%d:%02d", s // 60, s % 60)
+end
+
+function Hud.create(onUpgrade: () -> (), onCloseGate: () -> ())
 	local playerGui = Players.LocalPlayer:WaitForChild("PlayerGui")
 
 	local screen = Instance.new("ScreenGui")
@@ -95,6 +104,20 @@ function Hud.create(onUpgrade: () -> ())
 	corner(upgrade, 14)
 	upgrade.Activated:Connect(onUpgrade)
 
+	local gate = Instance.new("TextButton")
+	gate.Name = "Gate"
+	gate.AnchorPoint = Vector2.new(0, 1)
+	gate.Position = UDim2.new(0, 12, 1, -16)
+	gate.Size = UDim2.fromOffset(170, 56)
+	gate.BackgroundColor3 = Color3.fromRGB(220, 50, 70)
+	gate.Font = Enum.Font.FredokaOne
+	gate.TextScaled = true
+	gate.TextColor3 = Color3.new(1, 1, 1)
+	gate.Text = "Trancar lote"
+	gate.Parent = screen
+	corner(gate, 14)
+	gate.Activated:Connect(onCloseGate)
+
 	local toast = Instance.new("TextLabel")
 	toast.Name = "Toast"
 	toast.AnchorPoint = Vector2.new(0.5, 0)
@@ -123,6 +146,18 @@ function Hud.create(onUpgrade: () -> ())
 			else "Faixa máxima"
 		rateLabel.Text = `+{Format.rate(state.ratePerSecond)}/s · gerador nv {state.generatorLevel}`
 		vaultLabel.Text = "Cofre " .. Format.short(state.vaultAura)
+
+		local now = workspace:GetServerTimeNow()
+		if state.gateUntil > now then
+			gate.Text = "Trancado " .. clock(state.gateUntil - now)
+			gate.BackgroundTransparency = 0
+		elseif state.gateReadyAt > now then
+			gate.Text = "Recarga " .. clock(state.gateReadyAt - now)
+			gate.BackgroundTransparency = 0.5
+		else
+			gate.Text = "Trancar lote"
+			gate.BackgroundTransparency = 0
+		end
 
 		if state.upgradeCost then
 			local canAfford = state.aura >= state.upgradeCost

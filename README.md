@@ -26,6 +26,12 @@ Protótipo do loop de aura:
 6. Para o DataStore funcionar no Studio: publique o place e ative *Game Settings > Security > Enable Studio Access to API Services*. Sem isso o jogo roda com dados em memória e avisa no Output.
 7. Aperte Play.
 
+## Testar o roubo com 2 jogadores
+
+1. No Studio, selecione o Workspace e adicione o atributo booleano `TesteSemEscudo` marcado (desliga o escudo de iniciante de 15 min só no Studio).
+2. Test > Clients and Servers, 2 jogadores, Start.
+3. Num jogador, junte 300 de aura e compre o Aura Punch na tela Poderes. No outro, vá até a caixa e aperte Roubar.
+
 ## Estrutura
 
 ```

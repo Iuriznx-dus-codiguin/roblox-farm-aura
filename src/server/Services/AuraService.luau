@@ -64,6 +64,7 @@ function AuraService.pushState(player: Player)
 	end
 	local band = AuraMath.getBand(profile.peakAura)
 	local nextBand = AuraMath.getNextBand(profile.peakAura)
+	local plot = PlotService.getPlot(player)
 	stateChanged:FireClient(player, {
 		aura = profile.aura,
 		vaultAura = profile.vaultAura,
@@ -74,6 +75,11 @@ function AuraService.pushState(player: Player)
 		ratePerSecond = rateFor(player, profile),
 		generatorLevel = profile.generatorLevel,
 		upgradeCost = AuraMath.upgradeCost(profile.generatorLevel),
+		powers = profile.powers,
+		hasShield = AuraMath.hasBeginnerShield(profile.minutesPlayed),
+		-- Horários do portão em workspace:GetServerTimeNow() (ver GateService).
+		gateUntil = plot and plot:GetAttribute("GateUntil") or 0,
+		gateReadyAt = player:GetAttribute("GateReadyAt") or 0,
 	})
 	refreshPlot(player, profile)
 end

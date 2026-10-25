@@ -14,6 +14,7 @@ SHARED = ROOT / "src" / "shared"
 MODULES = [
     ("Bands", SHARED / "Config" / "Bands.luau"),
     ("Economy", SHARED / "Config" / "Economy.luau"),
+    ("Powers", SHARED / "Config" / "Powers.luau"),
     ("AuraMath", SHARED / "AuraMath.luau"),
     ("Format", SHARED / "Format.luau"),
 ]
