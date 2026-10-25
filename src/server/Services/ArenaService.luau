@@ -139,7 +139,7 @@ local function defeat(victim: Player, leaving: boolean)
 	end
 
 	if profile then
-		if AuraMath.hasBeginnerShield(profile.minutesPlayed) then
+		if AuraService.hasShield(profile) then
 			-- Escudo de iniciante: volta ao lote sem perder nada, e quem derrubou não rouba nada.
 			if not leaving then
 				notify:FireClient(victim, "Você caiu, mas o escudo de iniciante protegeu sua aura.")
