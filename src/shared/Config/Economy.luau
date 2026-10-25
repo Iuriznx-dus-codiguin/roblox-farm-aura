@@ -24,6 +24,16 @@ return {
 		BonusPerRebirth = 0.25, -- +25% de geração permanente por rebirth
 	},
 
+	Steal = {
+		HoldSeconds = 0, -- tempo segurando "Roubar" (GDD: ponto de partida 0 s)
+		MaxDistance = 10, -- studs até a caixa para o botão aparecer
+		OwnerCooldownSeconds = 10 * 60, -- um dono só perde 1 poder a cada 10 minutos
+		-- Em aberto no GDD: se a cópia roubada exige pagar o preço para usar. Por ora só exige a faixa.
+		StolenCopyRequiresPayment = false,
+	},
+
+	BeginnerShieldMinutes = 15, -- escudo de iniciante: não invade nem é invadido
+
 	-- Tempo mínimo entre dois toques no mesmo ponto de coleta, para o Touched não disparar várias vezes.
 	TouchCooldown = 0.5,
 }

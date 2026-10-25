@@ -63,4 +63,8 @@ function AuraMath.splitCollect(amount: number, hasVaultPass: boolean): (number, 
 	return amount - toVault, toVault
 end
 
+function AuraMath.hasBeginnerShield(minutesPlayed: number): boolean
+	return minutesPlayed < Economy.BeginnerShieldMinutes
+end
+
 return AuraMath

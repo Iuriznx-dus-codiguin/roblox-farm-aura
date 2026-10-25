@@ -70,7 +70,7 @@ local function buildPlot(index: number): Model
 		Name = "Generator",
 		Shape = Enum.PartType.Cylinder,
 		Size = Vector3.new(6, 8, 8),
-		CFrame = frame * CFrame.new(0, 4, 8) * CFrame.Angles(0, 0, math.rad(90)),
+		CFrame = frame * CFrame.new(0, 4, 24) * CFrame.Angles(0, 0, math.rad(90)),
 		Color = Color3.fromRGB(150, 90, 255),
 		Material = Enum.Material.Neon,
 	})
@@ -79,7 +79,7 @@ local function buildPlot(index: number): Model
 	local collector = part({
 		Name = "Collector",
 		Size = Vector3.new(10, 0.4, 10),
-		CFrame = frame * CFrame.new(0, 1.2, -6),
+		CFrame = frame * CFrame.new(0, 1.2, 14),
 		Color = Color3.fromRGB(120, 230, 255),
 		Material = Enum.Material.Neon,
 		CanCollide = false,
@@ -90,7 +90,7 @@ local function buildPlot(index: number): Model
 	local vault = part({
 		Name = "Vault",
 		Size = Vector3.new(8, 0.4, 8),
-		CFrame = frame * CFrame.new(24, 1.2, 20),
+		CFrame = frame * CFrame.new(28, 1.2, 26),
 		Color = Color3.fromRGB(255, 200, 60),
 		Material = Enum.Material.Neon,
 		CanCollide = false,
@@ -98,10 +98,21 @@ local function buildPlot(index: number): Model
 	vault.Parent = model
 	billboard(vault, "VaultGui", 5)
 
+	-- Centro da grade das caixas de poder (GDD: caixas no meio do lote). Só marca a posição.
+	local boxArea = part({
+		Name = "BoxArea",
+		Size = Vector3.new(1, 1, 1),
+		CFrame = frame * CFrame.new(0, 1, -8),
+		Transparency = 1,
+		CanCollide = false,
+		CanQuery = false,
+	})
+	boxArea.Parent = model
+
 	local spawn = part({
 		Name = "Spawn",
 		Size = Vector3.new(6, 1, 6),
-		CFrame = frame * CFrame.new(0, 1.1, -30),
+		CFrame = frame * CFrame.new(0, 1.1, -32),
 		Transparency = 1,
 		CanCollide = false,
 	})
@@ -185,6 +196,11 @@ function PlotService.release(player: Player)
 	end
 	owners[player] = nil
 	plot:SetAttribute("OwnerId", 0)
+	-- Os poderes somem com o dono (GDD: lotes offline nunca são invadidos).
+	local boxes = plot:FindFirstChild("PowerBoxes")
+	if boxes then
+		boxes:Destroy()
+	end
 	local label = signLabel(plot)
 	if label then
 		label.Text = "Lote livre"

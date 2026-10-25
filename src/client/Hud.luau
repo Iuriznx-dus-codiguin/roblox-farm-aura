@@ -19,6 +19,8 @@ export type State = {
 	ratePerSecond: number,
 	generatorLevel: number,
 	upgradeCost: number?,
+	powers: { [string]: number },
+	hasShield: boolean,
 }
 
 local Hud = {}

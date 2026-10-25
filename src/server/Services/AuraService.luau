@@ -74,6 +74,8 @@ function AuraService.pushState(player: Player)
 		ratePerSecond = rateFor(player, profile),
 		generatorLevel = profile.generatorLevel,
 		upgradeCost = AuraMath.upgradeCost(profile.generatorLevel),
+		powers = profile.powers,
+		hasShield = AuraMath.hasBeginnerShield(profile.minutesPlayed),
 	})
 	refreshPlot(player, profile)
 end

@@ -29,6 +29,7 @@ export type Profile = {
 	achievements: { [string]: boolean },
 	minutesPlayed: number,
 	lastLogout: number,
+	lastPowerLostAt: number, -- os.time() do último poder roubado deste jogador
 }
 
 local function newProfile(): Profile
@@ -47,6 +48,7 @@ local function newProfile(): Profile
 		achievements = {},
 		minutesPlayed = 0,
 		lastLogout = 0,
+		lastPowerLostAt = 0,
 	}
 end
 
