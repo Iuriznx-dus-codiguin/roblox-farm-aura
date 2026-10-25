@@ -6,11 +6,13 @@ local Services = script.Services
 local DataService = require(Services.DataService)
 local PlotService = require(Services.PlotService)
 local AuraService = require(Services.AuraService)
+local GateService = require(Services.GateService)
 local PowerService = require(Services.PowerService)
 
 DataService.start()
 PlotService.start()
 AuraService.start()
+GateService.start()
 PowerService.start()
 
 print("[Farm Aura] servidor pronto")

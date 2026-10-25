@@ -32,6 +32,11 @@ return {
 		StolenCopyRequiresPayment = false,
 	},
 
+	Gate = {
+		DurationSeconds = 60, -- o dono fecha o lote por 60 s
+		CooldownSeconds = 180, -- recarga de 3 min, contada a partir do momento em que fechou
+	},
+
 	BeginnerShieldMinutes = 15, -- escudo de iniciante: não invade nem é invadido
 
 	-- Tempo mínimo entre dois toques no mesmo ponto de coleta, para o Touched não disparar várias vezes.

@@ -14,6 +14,7 @@ local Remotes = require(Shared.Remotes)
 
 local AuraService = require(script.Parent.AuraService)
 local DataService = require(script.Parent.DataService)
+local GateService = require(script.Parent.GateService)
 local PlotService = require(script.Parent.PlotService)
 
 type Profile = DataService.Profile
@@ -182,6 +183,10 @@ function PowerService.trySteal(thief: Player, plot: Model, powerId: string)
 	end
 
 	-- Regras de segurança do GDD, na ordem em que o jogador entende o motivo.
+	if GateService.isClosed(plot) then
+		notify:FireClient(thief, `O lote de {owner.DisplayName} está trancado.`)
+		return
+	end
 	if AuraMath.hasBeginnerShield(thiefProfile.minutesPlayed) then
 		notify:FireClient(thief, "Você ainda está com escudo de iniciante e não pode roubar.")
 		return

@@ -118,6 +118,32 @@ local function buildPlot(index: number): Model
 	})
 	spawn.Parent = model
 
+	-- Paredes de laser do portão (GDD: o dono fecha o lote por 60 s). Ficam invisíveis até o portão fechar.
+	local gate = Instance.new("Folder")
+	gate.Name = "Gate"
+	local half = PLOT_SIZE / 2
+	local walls = {
+		{ offset = Vector3.new(0, 6, -half), size = Vector3.new(PLOT_SIZE, 12, 1) },
+		{ offset = Vector3.new(0, 6, half), size = Vector3.new(PLOT_SIZE, 12, 1) },
+		{ offset = Vector3.new(-half, 6, 0), size = Vector3.new(1, 12, PLOT_SIZE) },
+		{ offset = Vector3.new(half, 6, 0), size = Vector3.new(1, 12, PLOT_SIZE) },
+	}
+	for i, wall in walls do
+		part({
+			Name = "Laser" .. i,
+			Size = wall.size,
+			CFrame = frame * CFrame.new(wall.offset),
+			Color = Color3.fromRGB(255, 40, 60),
+			Material = Enum.Material.Neon,
+			Transparency = 1,
+			CanCollide = false,
+			CanTouch = false,
+			CanQuery = false,
+		}).Parent =
+			gate
+	end
+	gate.Parent = model
+
 	local sign = part({
 		Name = "Sign",
 		Size = Vector3.new(1, 1, 1),

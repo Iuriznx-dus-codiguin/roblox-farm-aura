@@ -12,9 +12,12 @@ local PowerShop = require(script.PowerShop)
 local player = Players.LocalPlayer
 local upgradeGenerator = Remotes.event("UpgradeGenerator")
 local buyPower = Remotes.event("BuyPower")
+local closeGate = Remotes.event("CloseGate")
 
 local hud = Hud.create(function()
 	upgradeGenerator:FireServer()
+end, function()
+	closeGate:FireServer()
 end)
 local shop = PowerShop.create(function(powerId)
 	buyPower:FireServer(powerId)

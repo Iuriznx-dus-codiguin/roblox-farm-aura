@@ -9,6 +9,7 @@ local EVENTS = {
 	"UpgradeGenerator", -- cliente -> servidor: pedido para subir o gerador
 	"Notify", -- servidor -> cliente: mensagem curta (ex.: aura offline recebida)
 	"BuyPower", -- cliente -> servidor: comprar o poder de id dado
+	"CloseGate", -- cliente -> servidor: fechar o portão do próprio lote
 }
 
 local Remotes = {}
