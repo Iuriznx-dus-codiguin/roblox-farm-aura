@@ -44,6 +44,12 @@ mudar, apague `Workspace.Plots` e `Workspace.Plaza` e rode o comando de novo.
 2. Test > Clients and Servers, 2 jogadores, Start.
 3. Num jogador, junte 300 de aura e compre o Aura Punch na tela Poderes. No outro, vá até a caixa e aperte Roubar.
 
+## Testar a arena
+
+- Com 2 jogadores (Test > Clients and Servers): os dois entram pelo portal roxo da praça ou pelo botão Arena. Depois de 10 s a rodada começa.
+- Sozinho: marque o atributo booleano `TesteArenaSolo` no Workspace (só vale no Studio) e a rodada começa com 1 jogador.
+- Na arena: clique para atacar, Q para esquivar. Resetar o personagem conta como derrota.
+
 ## Estrutura
 
 ```

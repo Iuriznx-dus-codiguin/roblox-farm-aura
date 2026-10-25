@@ -5,6 +5,7 @@
 
 local Players = game:GetService("Players")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
+local RunService = game:GetService("RunService")
 
 local Shared = ReplicatedStorage:WaitForChild("Shared")
 local Arena = require(Shared.Config.Arena)
@@ -38,6 +39,15 @@ local phaseEndsAt = 0
 local queue: { Player } = {}
 local fighters: { [Player]: Fighter } = {}
 local roundToken = 0
+local startedWith = 0
+
+-- No Studio, o atributo TesteArenaSolo = true no Workspace deixa a rodada começar com 1 jogador.
+local function minPlayers(): number
+	if RunService:IsStudio() and workspace:GetAttribute("TesteArenaSolo") == true then
+		return 1
+	end
+	return Arena.MinPlayers
+end
 
 local function now(): number
 	return workspace:GetServerTimeNow()
@@ -59,7 +69,7 @@ local function stateFor(player: Player)
 		endsAt = phaseEndsAt,
 		queued = table.find(queue, player) ~= nil,
 		queueCount = #queue,
-		minPlayers = Arena.MinPlayers,
+		minPlayers = minPlayers(),
 		alive = aliveCount(),
 		fighting = fighters[player] ~= nil and fighters[player].alive,
 	}
@@ -163,7 +173,9 @@ local function defeat(victim: Player, leaving: boolean)
 	end
 	broadcast()
 
-	if phase == "running" and aliveCount() <= 1 then
+	-- Rodada com 1 jogador (teste no Studio) só acaba pelo tempo ou quando ele cai.
+	local lastStanding = if startedWith >= 2 then aliveCount() <= 1 else aliveCount() == 0
+	if phase == "running" and lastStanding then
 		task.defer(endRound)
 	end
 end
@@ -205,7 +217,7 @@ local function startRound()
 		end
 	end
 
-	if index < Arena.MinPlayers then
+	if index < minPlayers() then
 		-- Alguém saiu durante a contagem: devolve quem sobrou para a fila.
 		for player in fighters do
 			table.insert(queue, player)
@@ -218,6 +230,7 @@ local function startRound()
 	end
 
 	phase = "running"
+	startedWith = index
 	phaseEndsAt = now() + Arena.RoundSeconds
 	broadcast()
 
@@ -259,7 +272,7 @@ function endRound()
 end
 
 function ArenaService.checkQueue()
-	if phase == "waiting" and #queue >= Arena.MinPlayers then
+	if phase == "waiting" and #queue >= minPlayers() then
 		phase = "countdown"
 		phaseEndsAt = now() + Arena.CountdownSeconds
 		roundToken += 1
@@ -270,7 +283,7 @@ function ArenaService.checkQueue()
 				startRound()
 			end
 		end)
-	elseif phase == "countdown" and #queue < Arena.MinPlayers then
+	elseif phase == "countdown" and #queue < minPlayers() then
 		phase = "waiting"
 		roundToken += 1
 		broadcast()
