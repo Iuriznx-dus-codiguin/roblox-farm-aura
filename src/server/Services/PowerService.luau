@@ -5,6 +5,7 @@
 
 local Players = game:GetService("Players")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
+local RunService = game:GetService("RunService")
 
 local Shared = ReplicatedStorage:WaitForChild("Shared")
 local AuraMath = require(Shared.AuraMath)
@@ -27,6 +28,15 @@ local GRID_SPACING = 9
 local BOX_SIZE = Vector3.new(5, 5, 5)
 
 local PowerService = {}
+
+-- Escudo de iniciante. No Studio, o atributo TesteSemEscudo = true no Workspace desliga o escudo para dar
+-- para testar o roubo sem esperar 15 minutos. Fora do Studio o atributo é ignorado.
+local function hasShield(profile: Profile): boolean
+	if RunService:IsStudio() and workspace:GetAttribute("TesteSemEscudo") == true then
+		return false
+	end
+	return AuraMath.hasBeginnerShield(profile.minutesPlayed)
+end
 
 local function boxesFolder(plot: Model): Folder
 	local folder = plot:FindFirstChild("PowerBoxes")
@@ -187,11 +197,11 @@ function PowerService.trySteal(thief: Player, plot: Model, powerId: string)
 		notify:FireClient(thief, `O lote de {owner.DisplayName} está trancado.`)
 		return
 	end
-	if AuraMath.hasBeginnerShield(thiefProfile.minutesPlayed) then
+	if hasShield(thiefProfile) then
 		notify:FireClient(thief, "Você ainda está com escudo de iniciante e não pode roubar.")
 		return
 	end
-	if AuraMath.hasBeginnerShield(ownerProfile.minutesPlayed) then
+	if hasShield(ownerProfile) then
 		notify:FireClient(thief, `{owner.DisplayName} está com escudo de iniciante.`)
 		return
 	end
