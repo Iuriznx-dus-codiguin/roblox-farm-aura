@@ -40,6 +40,17 @@ local function updatePeak(profile: Profile)
 	profile.peakAura = math.max(profile.peakAura, profile.aura + profile.vaultAura)
 end
 
+-- Soma aura carregada vinda de fora do gerador (ex.: roubo na arena) e atualiza o pico da faixa.
+function AuraService.addAura(player: Player, amount: number)
+	local profile = DataService.get(player)
+	if not profile or amount <= 0 then
+		return
+	end
+	profile.aura += amount
+	updatePeak(profile)
+	AuraService.pushState(player)
+end
+
 local function setBillboard(plot: Model, partName: string, guiName: string, text: string)
 	local holder = plot:FindFirstChild(partName)
 	local gui = holder and holder:FindFirstChild(guiName)

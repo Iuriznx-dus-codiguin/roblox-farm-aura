@@ -1,0 +1,3 @@
+--!strict
+-- Substitui o script "Health" padrão do Roblox para a vida não regenerar sozinha.
+-- No GDD a arena não tem cura; fora dela ninguém toma dano.

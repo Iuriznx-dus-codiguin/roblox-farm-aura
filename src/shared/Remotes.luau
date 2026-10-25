@@ -10,6 +10,10 @@ local EVENTS = {
 	"Notify", -- servidor -> cliente: mensagem curta (ex.: aura offline recebida)
 	"BuyPower", -- cliente -> servidor: comprar o poder de id dado
 	"CloseGate", -- cliente -> servidor: fechar o portão do próprio lote
+	"JoinArena", -- cliente -> servidor: entrar ou sair da fila da arena
+	"ArenaState", -- servidor -> cliente: fase da rodada, fila, vivos e se o jogador está lutando
+	"Attack", -- cliente -> servidor: golpe do ataque básico
+	"Dodge", -- cliente -> servidor: esquiva (o avanço é feito no cliente)
 }
 
 local Remotes = {}
