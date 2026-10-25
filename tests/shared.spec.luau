@@ -30,5 +30,6 @@ for _, p in Powers.list do
 end
 for band = 1, 6 do assert(seenBands[band],"faixa sem poder novo: "..band) end
 eq(Powers.byId["28"].price,15000000,"preco Aura Thief")
+eq(Format.rate(2),"2","taxa 2") eq(Format.rate(2.8),"2.8","taxa 2.8") eq(Format.rate(3.92),"3.9","taxa 3.92") eq(Format.rate(41.3),"41.3","taxa 41.3") eq(Format.rate(1195.6),"1.2K","taxa 1195")
 print("todos os testes passaram")
 

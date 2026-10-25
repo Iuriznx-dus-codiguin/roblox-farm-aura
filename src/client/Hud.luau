@@ -144,7 +144,7 @@ function Hud.create(onUpgrade: () -> (), onCloseGate: () -> ())
 		progressLabel.Text = if state.nextBandAura
 			then `Pico {Format.short(state.peakAura)} / {Format.short(state.nextBandAura)}`
 			else "Faixa máxima"
-		rateLabel.Text = `+{Format.short(state.ratePerSecond)}/s · gerador nv {state.generatorLevel}`
+		rateLabel.Text = `+{Format.rate(state.ratePerSecond)}/s · gerador nv {state.generatorLevel}`
 		vaultLabel.Text = "Cofre " .. Format.short(state.vaultAura)
 
 		local now = workspace:GetServerTimeNow()

@@ -20,4 +20,14 @@ function Format.short(value: number): string
 	return text .. SUFFIXES[tier]
 end
 
+-- Taxa por segundo: abaixo de 100 mostra uma casa decimal, para o jogador ver o ganho de cada upgrade
+-- (2 -> 2.8 -> 3.9). Acima disso usa o formato curto.
+function Format.rate(value: number): string
+	if math.abs(value) < 100 then
+		local text = string.format("%.1f", math.floor(value * 10) / 10):gsub("%.0$", "")
+		return text
+	end
+	return Format.short(value)
+end
+
 return Format
