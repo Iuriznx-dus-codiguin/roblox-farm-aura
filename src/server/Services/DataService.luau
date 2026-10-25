@@ -208,8 +208,24 @@ local function onPlayerAdded(player: Player)
 	loadedSignal:Fire(player)
 end
 
+local beforeRelease: { (Player, Profile) -> () } = {}
+
+-- Roda antes do último save de quem está saindo (ex.: a arena conta a desconexão como derrota).
+function DataService.beforeRelease(callback: (Player, Profile) -> ())
+	table.insert(beforeRelease, callback)
+end
+
 local function onPlayerRemoving(player: Player)
-	if profiles[player] then
+	local profile = profiles[player]
+	if profile then
+		for _, callback in beforeRelease do
+			local ok, err = pcall(function()
+				callback(player, profile)
+			end)
+			if not ok then
+				warn("[DataService] beforeRelease falhou:", err)
+			end
+		end
 		saveProfile(player, true)
 		profiles[player] = nil
 	end

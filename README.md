@@ -40,9 +40,18 @@ mudar, apague `Workspace.Plots` e `Workspace.Plaza` e rode o comando de novo.
 
 ## Testar o roubo com 2 jogadores
 
-1. No Studio, selecione o Workspace e adicione o atributo booleano `TesteSemEscudo` marcado (desliga o escudo de iniciante de 15 min só no Studio).
+1. No Studio, selecione o Workspace e adicione o atributo booleano `TesteSemEscudo` marcado (desliga o escudo de iniciante de 15 min só no Studio, para o roubo e para a derrota na arena).
 2. Test > Clients and Servers, 2 jogadores, Start.
 3. Num jogador, junte 300 de aura e compre o Aura Punch na tela Poderes. No outro, vá até a caixa e aperte Roubar.
+
+## Testar a arena
+
+- Com 2 jogadores (Test > Clients and Servers): os dois entram pelo portal roxo da praça ou pelo botão Arena. Depois de 10 s a rodada começa.
+- Sozinho: marque o atributo booleano `TesteArenaSolo` no Workspace (só vale no Studio) e a rodada começa com 1 jogador.
+- Na arena: clique para atacar, Q para esquivar. Resetar o personagem conta como derrota.
+- Para ver a perda de aura ao cair, marque também `TesteSemEscudo`; com o escudo de iniciante ninguém perde nada.
+- A arena fica em Z = 1500, fora do Baseplate. Se o place tem uma arena antiga (gerada em Z = 1000), apague
+  `Workspace.Arena` e `Workspace.ArenaPortal` e rode `require(game.ServerScriptService.Server.ArenaBuilder).build(workspace)`.
 
 ## Estrutura
 

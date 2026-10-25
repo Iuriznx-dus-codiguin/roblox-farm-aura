@@ -3,6 +3,7 @@
 
 local Players = game:GetService("Players")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
+local RunService = game:GetService("RunService")
 
 local Shared = ReplicatedStorage:WaitForChild("Shared")
 local AuraMath = require(Shared.AuraMath)
@@ -38,6 +39,26 @@ end
 
 local function updatePeak(profile: Profile)
 	profile.peakAura = math.max(profile.peakAura, profile.aura + profile.vaultAura)
+end
+
+-- Escudo de iniciante (GDD: primeiros 15 min de jogo). No Studio, o atributo TesteSemEscudo = true no Workspace
+-- desliga o escudo para dar para testar o roubo e a derrota na arena sem esperar. Fora do Studio é ignorado.
+function AuraService.hasShield(profile: Profile): boolean
+	if RunService:IsStudio() and workspace:GetAttribute("TesteSemEscudo") == true then
+		return false
+	end
+	return AuraMath.hasBeginnerShield(profile.minutesPlayed)
+end
+
+-- Soma aura carregada vinda de fora do gerador (ex.: roubo na arena) e atualiza o pico da faixa.
+function AuraService.addAura(player: Player, amount: number)
+	local profile = DataService.get(player)
+	if not profile or amount <= 0 then
+		return
+	end
+	profile.aura += amount
+	updatePeak(profile)
+	AuraService.pushState(player)
 end
 
 local function setBillboard(plot: Model, partName: string, guiName: string, text: string)
@@ -76,7 +97,7 @@ function AuraService.pushState(player: Player)
 		generatorLevel = profile.generatorLevel,
 		upgradeCost = AuraMath.upgradeCost(profile.generatorLevel),
 		powers = profile.powers,
-		hasShield = AuraMath.hasBeginnerShield(profile.minutesPlayed),
+		hasShield = AuraService.hasShield(profile),
 		-- Horários do portão em workspace:GetServerTimeNow() (ver GateService).
 		gateUntil = plot and plot:GetAttribute("GateUntil") or 0,
 		gateReadyAt = player:GetAttribute("GateReadyAt") or 0,
