@@ -16,6 +16,7 @@ MODULES = [
     ("Economy", SHARED / "Config" / "Economy.luau"),
     ("Powers", SHARED / "Config" / "Powers.luau"),
     ("Arena", SHARED / "Config" / "Arena.luau"),
+    ("Dances", SHARED / "Config" / "Dances.luau"),
     ("AuraMath", SHARED / "AuraMath.luau"),
     ("PowerMath", SHARED / "PowerMath.luau"),
     ("Format", SHARED / "Format.luau"),

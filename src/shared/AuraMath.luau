@@ -50,6 +50,12 @@ function AuraMath.ratePerSecond(level: number, rebirths: number, bonuses: { numb
 	return AuraMath.generatorRate(level) * AuraMath.multiplier(rebirths, bonuses)
 end
 
+-- Aura carregada que o próximo rebirth pede, dado quantos rebirths o jogador já fez.
+function AuraMath.rebirthCost(rebirths: number): number
+	local r = Economy.Rebirth
+	return r.FirstCost * r.CostGrowth ^ rebirths
+end
+
 function AuraMath.offlineGain(ratePerSecond: number, secondsAway: number): number
 	local o = Economy.Offline
 	local seconds = math.clamp(secondsAway, 0, o.MaxSeconds)

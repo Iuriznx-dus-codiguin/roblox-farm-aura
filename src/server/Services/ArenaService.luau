@@ -134,8 +134,14 @@ local function defeat(victim: Player, leaving: boolean)
 		killer = hit.attacker
 	end
 	local killerFighter = if killer then fighters[killer] else nil
-	if killerFighter then
+	if killer and killerFighter then
 		killerFighter.kills += 1
+		local killerProfile = DataService.get(killer)
+		if killerProfile then
+			-- Conta para a conquista de 10 derrotas, que sai no próximo pushState.
+			killerProfile.arenaKills += 1
+			AuraService.pushState(killer)
+		end
 	end
 
 	if profile then
@@ -248,6 +254,17 @@ function endRound()
 	phase = "waiting"
 	roundToken += 1
 
+	-- Vence quem sobra sozinho numa rodada que começou com 2 ou mais. Se o tempo acaba com mais de um vivo,
+	-- ninguém vence. A sequência de vitórias (conquista Supreme Pose) zera para quem jogou e não venceu.
+	local winner: Player? = nil
+	if startedWith >= 2 and aliveCount() == 1 then
+		for player, fighter in fighters do
+			if fighter.alive then
+				winner = player
+			end
+		end
+	end
+
 	-- Quem mais derrotou leva o bônus; empate divide o prêmio, cada um sobre a própria aura de entrada.
 	local topKills = 0
 	for _, fighter in fighters do
@@ -260,6 +277,17 @@ function endRound()
 				AuraService.addAura(player, bonus)
 				notify:FireClient(player, `Mais derrotas da rodada! Bônus de {Format.short(bonus)} de aura.`)
 			end
+		end
+		local profile = DataService.get(player)
+		if profile then
+			profile.arenaWinStreak = if player == winner then profile.arenaWinStreak + 1 else 0
+			if player == winner then
+				notify:FireClient(
+					player,
+					`Você venceu a rodada! Vitórias seguidas: {profile.arenaWinStreak}.`
+				)
+			end
+			AuraService.pushState(player)
 		end
 		if fighter.alive then
 			sendHome(player)

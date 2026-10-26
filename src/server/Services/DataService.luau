@@ -30,6 +30,10 @@ export type Profile = {
 	minutesPlayed: number,
 	lastLogout: number,
 	lastPowerLostAt: number, -- os.time() do último poder roubado deste jogador
+	-- Contadores das conquistas (ver Config/Dances)
+	collected: number, -- aura total já coletada do gerador
+	arenaKills: number, -- derrotas causadas na arena
+	arenaWinStreak: number, -- rodadas de arena vencidas seguidas
 }
 
 local function newProfile(): Profile
@@ -49,6 +53,9 @@ local function newProfile(): Profile
 		minutesPlayed = 0,
 		lastLogout = 0,
 		lastPowerLostAt = 0,
+		collected = 0,
+		arenaKills = 0,
+		arenaWinStreak = 0,
 	}
 end
 

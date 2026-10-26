@@ -28,6 +28,8 @@ return {
 
 	Rebirth = {
 		BonusPerRebirth = 0.25, -- +25% de geração permanente por rebirth
+		FirstCost = 1_000_000, -- o primeiro pede 1.000.000 de aura (faixa Eclipse)
+		CostGrowth = 3, -- cada rebirth seguinte pede o triplo
 	},
 
 	Steal = {

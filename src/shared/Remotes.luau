@@ -18,6 +18,9 @@ local EVENTS = {
 	"TrainPower", -- cliente -> servidor: treinar o poder de id dado (+1 nível)
 	"UsePower", -- cliente -> servidor: disparar o poder do slot (1 a 3) na direção do ponto de mira
 	"PowerFx", -- servidor -> clientes: um poder foi disparado; o cliente desenha o efeito e move quem disparou
+	"SelectDance", -- cliente -> servidor: escolher a dança ativa (precisa estar liberada)
+	"Dance", -- cliente -> servidor: true começa a dançar no lote, false para
+	"Rebirth", -- cliente -> servidor: fazer rebirth
 }
 
 local Remotes = {}
