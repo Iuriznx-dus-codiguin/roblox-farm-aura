@@ -9,6 +9,8 @@ local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local Shared = ReplicatedStorage:WaitForChild("Shared")
 local Arena = require(Shared.Config.Arena)
 
+local Push = require(script.Parent.Push)
+
 export type ArenaState = {
 	phase: "waiting" | "countdown" | "running",
 	endsAt: number,
@@ -76,8 +78,7 @@ function ArenaHud.create(onJoin: () -> (), onAttack: () -> (), onDodge: () -> ()
 			direction = root.CFrame.LookVector
 		end
 		local flat = Vector3.new(direction.X, 0, direction.Z).Unit
-		root.AssemblyLinearVelocity = flat * Arena.Dodge.DashSpeed
-			+ Vector3.new(0, root.AssemblyLinearVelocity.Y, 0)
+		Push.horizontal(root, flat * Arena.Dodge.DashSpeed, Arena.Dodge.DashSeconds)
 	end
 
 	local function handleAttack(_name: string, inputState: Enum.UserInputState): Enum.ContextActionResult

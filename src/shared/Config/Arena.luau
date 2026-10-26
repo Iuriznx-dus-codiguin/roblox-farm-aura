@@ -24,6 +24,7 @@ return {
 		InvulnerableSeconds = 0.3,
 		Cooldown = 2,
 		DashSpeed = 70, -- velocidade do avanço no cliente
+		DashSeconds = 0.2, -- duração do avanço (70 x 0,2 = 14 studs)
 	},
 
 	-- % da aura carregada da vítima que o vencedor rouba, pelo golpe final.

@@ -4,7 +4,8 @@
 --
 -- O servidor chama build() quando o place não tem Workspace.Plots. Para o mapa aparecer no modo Edit (e poder
 -- ser decorado e salvo no place), rode uma vez na Command Bar do Studio:
---   require(game.ServerScriptService.Server.PlotBuilder).build(workspace)
+--   require(game.ServerScriptService.Server.PlotBuilder:Clone()).build(workspace)
+-- O Clone() evita que a Command Bar use uma versão antiga do módulo que ficou em cache.
 
 local PLOT_COUNT = 12
 local RING_RADIUS = 190

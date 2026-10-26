@@ -32,7 +32,7 @@ Os lotes e a praça são criados pelo código quando o jogo roda. Para eles fica
 decorar), rode uma vez na Command Bar do Studio (View > Command Bar) e depois salve o place:
 
 ```lua
-require(game.ServerScriptService.Server.PlotBuilder).build(workspace)
+require(game.ServerScriptService.Server.PlotBuilder:Clone()).build(workspace)
 ```
 
 Com `Workspace.Plots` salvo no place, o servidor usa esse mapa em vez de gerar outro. Se o código do PlotBuilder
@@ -51,12 +51,13 @@ mudar, apague `Workspace.Plots` e `Workspace.Plaza` e rode o comando de novo.
 - Na arena: clique para atacar, Q para esquivar. Resetar o personagem conta como derrota.
 - Para ver a perda de aura ao cair, marque também `TesteSemEscudo`; com o escudo de iniciante ninguém perde nada.
 - A arena fica em Z = 1500, fora do Baseplate. Se o place tem uma arena antiga (gerada em Z = 1000), apague
-  `Workspace.Arena` e `Workspace.ArenaPortal` e rode `require(game.ServerScriptService.Server.ArenaBuilder).build(workspace)`.
+  `Workspace.Arena` e `Workspace.ArenaPortal` e rode `require(game.ServerScriptService.Server.ArenaBuilder:Clone()).build(workspace)`.
+- O `:Clone()` nos comandos evita que a Command Bar use uma versão antiga do módulo que ficou em cache.
 
 ## Testar os poderes
 
-1. Em Play, dê aura ao jogador pela Command Bar do servidor (exemplo: 2 milhões, que leva até a faixa Eclipse):
-   `require(game.ServerScriptService.Server.Services.AuraService).addAura(game.Players:GetPlayers()[1], 2e6)`
+1. Em Play, dê aura ao jogador pela Command Bar no contexto Server (exemplo: 2 milhões, que leva até a faixa Eclipse):
+   `game.Players:GetPlayers()[1]:SetAttribute("TesteDarAura", 2e6)` (só vale no Studio)
 2. Na tela Poderes, compre, treine e equipe até 3 poderes. Eles aparecem na barra embaixo, com o custo de cada disparo.
 3. Entre na arena. Teclas 1, 2 e 3 (ou tocar no slot) disparam na direção do mouse; no celular a mira trava no
    inimigo mais próximo. Cada disparo gasta aura e tem recarga.

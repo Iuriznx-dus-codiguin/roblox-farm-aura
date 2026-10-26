@@ -13,6 +13,8 @@ local Shared = ReplicatedStorage:WaitForChild("Shared")
 local Arena = require(Shared.Config.Arena)
 local Powers = require(Shared.Config.Powers)
 
+local Push = require(script.Parent.Push)
+
 export type Cast = {
 	powerId: string,
 	caster: Player,
@@ -120,17 +122,15 @@ end
 
 local function dash(cast: Cast, color: Color3)
 	local config = Arena.Models["Investida"]
-	local speed = config.Distance / config.Duration
-	local mine = cast.caster == Players.LocalPlayer
+	local start = rootOf(cast.caster)
+	if start and cast.caster == Players.LocalPlayer then
+		Push.horizontal(start, cast.direction * (config.Distance / config.Duration), config.Duration)
+	end
 	local lastGhost = -1
 	during(config.Duration, function(elapsed)
 		local root = rootOf(cast.caster)
 		if not root then
 			return
-		end
-		if mine then
-			root.AssemblyLinearVelocity = cast.direction * speed
-				+ Vector3.new(0, root.AssemblyLinearVelocity.Y, 0)
 		end
 		if elapsed - lastGhost >= 0.05 then
 			lastGhost = elapsed
@@ -178,13 +178,7 @@ local function impact(cast: Cast, color: Color3)
 			humanoid:ChangeState(Enum.HumanoidStateType.Jumping)
 			root.AssemblyLinearVelocity = horizontal
 				+ Vector3.new(0, workspace.Gravity * config.AirTime / 2, 0)
-			during(config.AirTime, function()
-				local current = rootOf(cast.caster)
-				if current then
-					current.AssemblyLinearVelocity = horizontal
-						+ Vector3.new(0, current.AssemblyLinearVelocity.Y, 0)
-				end
-			end, {})
+			Push.horizontal(root, horizontal, config.AirTime)
 		end
 	end
 	task.delay(config.AirTime, function()

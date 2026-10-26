@@ -3,7 +3,8 @@
 -- Os nomes das peças são o contrato com ArenaService.
 --
 -- O servidor chama build() quando o place não tem Workspace.Arena. Para ver no modo Edit, rode na Command Bar:
---   require(game.ServerScriptService.Server.ArenaBuilder).build(workspace)
+--   require(game.ServerScriptService.Server.ArenaBuilder:Clone()).build(workspace)
+-- O Clone() evita que a Command Bar use uma versão antiga do módulo que ficou em cache.
 
 -- Z = 1500 deixa a arena inteira fora do Baseplate do template (que vai de -1024 a 1024), senão ele cobre o chão.
 local ARENA_CENTER = Vector3.new(0, 0, 1500)
