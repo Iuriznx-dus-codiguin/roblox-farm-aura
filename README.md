@@ -63,6 +63,16 @@ mudar, apague `Workspace.Plots` e `Workspace.Plaza` e rode o comando de novo.
    inimigo mais próximo. Cada disparo gasta aura e tem recarga.
 4. Dano e roubo só aparecem com 2 jogadores (Test > Clients and Servers), porque os poderes só acertam quem está lutando.
 
+## Testar danças, conquistas e rebirth
+
+1. Em Play, pise no coletor: a conquista "Primeira coleta" libera a dança Aura Sway.
+2. No seu lote, aperte Dançar (embaixo à esquerda): a aura por segundo sobe 5%. Andar para a dança.
+3. Dê 1 milhão de aura com `game.Players:GetPlayers()[1]:SetAttribute("TesteDarAura", 1e6)` (Command Bar, contexto
+   Server): sai a conquista "Chegar a 1.000.000 de aura" (Eclipse Flow).
+4. Na tela Rebirth, toque duas vezes em Fazer rebirth: a aura, o cofre e a faixa zeram, a geração ganha +25% e sai
+   a conquista "Primeiro rebirth" (Glow Spin).
+5. As conquistas da arena (10 derrotas e 3 vitórias seguidas) precisam de 2 jogadores.
+
 ## Estrutura
 
 ```

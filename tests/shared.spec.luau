@@ -40,5 +40,15 @@ eq(PowerMath.trainCost(punch, 1),300,"treino 1->2") eq(PowerMath.trainCost(punch
 eq(PowerMath.stealPct(punch),0.25,"roubo comum") eq(PowerMath.stealPct(voidOrb),0.30,"roubo raro") eq(PowerMath.stealPct(thief),0.50,"roubo lendario")
 for _, p in Powers.list do assert(Arena.Models[p.model],"modelo sem config: "..p.model) end
 eq(Arena.MaxEquipped,3,"3 equipados")
+-- Rebirth e danças.
+eq(AuraMath.rebirthCost(0),1000000,"1o rebirth") eq(AuraMath.rebirthCost(1),3000000,"2o rebirth") eq(AuraMath.rebirthCost(2),9000000,"3o rebirth")
+eq(#Dances.list,5,"5 dancas")
+local seenAchievements, expectedBonus = {}, { 0.05, 0.10, 0.15, 0.20, 0.25 }
+for i, d in Dances.list do
+	eq(Dances.byId[d.id],d,"id unico "..d.id)
+	assert(not seenAchievements[d.achievement.id],"conquista repetida "..d.achievement.id)
+	seenAchievements[d.achievement.id] = true
+	eq(d.bonus,expectedBonus[i],"bonus "..d.name)
+end
 print("todos os testes passaram")
 

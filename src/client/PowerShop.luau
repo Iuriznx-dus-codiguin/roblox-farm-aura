@@ -13,6 +13,7 @@ local PowerMath = require(Shared.PowerMath)
 local Powers = require(Shared.Config.Powers)
 
 local Hud = require(script.Parent.Hud)
+local Panels = require(script.Parent.Panels)
 
 local PowerShop = {}
 
@@ -168,8 +169,9 @@ function PowerShop.create(
 		end)
 	end
 
+	Panels.register(panel)
 	toggle.Activated:Connect(function()
-		panel.Visible = not panel.Visible
+		Panels.toggle(panel)
 	end)
 	close.Activated:Connect(function()
 		panel.Visible = false

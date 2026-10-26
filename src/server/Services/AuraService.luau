@@ -7,10 +7,12 @@ local RunService = game:GetService("RunService")
 
 local Shared = ReplicatedStorage:WaitForChild("Shared")
 local AuraMath = require(Shared.AuraMath)
+local Dances = require(Shared.Config.Dances)
 local Economy = require(Shared.Config.Economy)
 local Format = require(Shared.Format)
 local Remotes = require(Shared.Remotes)
 
+local AchievementService = require(script.Parent.AchievementService)
 local DataService = require(script.Parent.DataService)
 local PlotService = require(script.Parent.PlotService)
 
@@ -24,9 +26,16 @@ local AuraService = {}
 
 local lastTouch: { [Player]: { [string]: number } } = {}
 
--- Passes e danças ainda não existem; entram aqui quando forem feitos.
-local function bonusesFor(_player: Player): { number }
-	return {}
+-- Bônus que somam no multiplicador de geração. A dança vale enquanto o DanceService marca o atributo
+-- Dancing (só no próprio lote). Os passes entram aqui quando forem feitos.
+local function bonusesFor(player: Player): { number }
+	local bonuses = {}
+	local danceId = player:GetAttribute("Dancing")
+	local dance = if type(danceId) == "string" then Dances.byId[danceId] else nil
+	if dance then
+		table.insert(bonuses, dance.bonus)
+	end
+	return bonuses
 end
 
 local function hasVaultPass(_player: Player): boolean
@@ -83,6 +92,7 @@ function AuraService.pushState(player: Player)
 	if not profile then
 		return
 	end
+	AchievementService.check(player, profile)
 	local band = AuraMath.getBand(profile.peakAura)
 	local nextBand = AuraMath.getNextBand(profile.peakAura)
 	local plot = PlotService.getPlot(player)
@@ -98,6 +108,20 @@ function AuraService.pushState(player: Player)
 		upgradeCost = AuraMath.upgradeCost(profile.generatorLevel),
 		powers = profile.powers,
 		equipped = profile.equipped,
+		rebirths = profile.rebirths,
+		rebirthCost = AuraMath.rebirthCost(profile.rebirths),
+		dances = profile.dances,
+		activeDance = profile.activeDance,
+		dancing = player:GetAttribute("Dancing"),
+		achievements = profile.achievements,
+		-- Contadores das conquistas, para a tela Danças mostrar o progresso.
+		stats = {
+			collected = profile.collected,
+			arenaKills = profile.arenaKills,
+			rebirths = profile.rebirths,
+			peakAura = profile.peakAura,
+			arenaWinStreak = profile.arenaWinStreak,
+		},
 		hasShield = AuraService.hasShield(profile),
 		-- Horários do portão em workspace:GetServerTimeNow() (ver GateService).
 		gateUntil = plot and plot:GetAttribute("GateUntil") or 0,
@@ -115,6 +139,7 @@ local function collect(player: Player, profile: Profile)
 	profile.pendingAura -= amount
 	profile.aura += carried
 	profile.vaultAura += toVault
+	profile.collected += amount
 	updatePeak(profile)
 	AuraService.pushState(player)
 end

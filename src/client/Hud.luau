@@ -21,6 +21,13 @@ export type State = {
 	upgradeCost: number?,
 	powers: { [string]: number }, -- id do poder -> nível de treino
 	equipped: { string }, -- até 3 ids, na ordem dos slots
+	rebirths: number,
+	rebirthCost: number, -- aura carregada que o próximo rebirth pede
+	dances: { string }, -- ids das danças liberadas
+	activeDance: string?, -- dança escolhida na tela Danças
+	dancing: string?, -- dança tocando agora (só no próprio lote)
+	achievements: { [string]: boolean },
+	stats: { [string]: number }, -- contadores das conquistas (ver Config/Dances)
 	hasShield: boolean,
 	gateUntil: number,
 	gateReadyAt: number,
