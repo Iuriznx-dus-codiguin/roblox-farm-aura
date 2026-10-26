@@ -2,16 +2,22 @@
 -- Poderes na base (GDD: "Servidor, base e invasão" e "Poderes").
 -- Cada poder desbloqueado vira uma caixa no meio do lote. Outros jogadores se aproximam e apertam "Roubar":
 -- o dono perde o poder e o invasor ganha uma cópia no nível 1, guardada na base dele.
+-- Também compra, treina (níveis 1 a 5) e equipa até 3 poderes para a arena.
 
 local Players = game:GetService("Players")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 
 local Shared = ReplicatedStorage:WaitForChild("Shared")
+local Arena = require(Shared.Config.Arena)
 local AuraMath = require(Shared.AuraMath)
+local Bands = require(Shared.Config.Bands)
 local Economy = require(Shared.Config.Economy)
+local Format = require(Shared.Format)
+local PowerMath = require(Shared.PowerMath)
 local Powers = require(Shared.Config.Powers)
 local Remotes = require(Shared.Remotes)
 
+local ArenaService = require(script.Parent.ArenaService)
 local AuraService = require(script.Parent.AuraService)
 local DataService = require(script.Parent.DataService)
 local GateService = require(script.Parent.GateService)
@@ -20,6 +26,8 @@ local PlotService = require(script.Parent.PlotService)
 type Profile = DataService.Profile
 
 local buyPower = Remotes.event("BuyPower")
+local equipPower = Remotes.event("EquipPower")
+local trainPower = Remotes.event("TrainPower")
 local notify = Remotes.event("Notify")
 
 local GRID_COLUMNS = 4
@@ -153,8 +161,8 @@ local function onBuy(player: Player, powerId: unknown)
 	if profile.powers[powerId] then
 		return
 	end
-	if AuraMath.getBand(profile.peakAura).index < power.band then
-		notify:FireClient(player, `{power.name} precisa da faixa {power.band}.`)
+	if not PowerMath.isUsable(power, AuraMath.getBand(profile.peakAura).index) then
+		notify:FireClient(player, `{power.name} precisa da faixa {Bands[power.band].name}.`)
 		return
 	end
 	if profile.aura < power.price then
@@ -163,6 +171,72 @@ local function onBuy(player: Player, powerId: unknown)
 	profile.aura -= power.price
 	profile.powers[powerId] = 1
 	addBox(plot, powerId)
+	AuraService.pushState(player)
+	DataService.saveNow(player)
+end
+
+-- Poder comprado ou roubado do jogador, com o perfil e o nível. Nil se o pedido não vale.
+local function ownedPower(player: Player, powerId: unknown): (Powers.Power?, Profile?, number?)
+	if type(powerId) ~= "string" then
+		return nil, nil, nil
+	end
+	local power = Powers.byId[powerId]
+	local profile = DataService.get(player)
+	local level = profile and profile.powers[powerId]
+	if not power or not profile or not level then
+		return nil, nil, nil
+	end
+	return power, profile, level
+end
+
+-- Equipar e treinar só fora da luta: na arena, os 3 poderes da rodada são os que entraram com o jogador.
+local function blockedInArena(player: Player): boolean
+	if ArenaService.isFighting(player) then
+		notify:FireClient(player, "Troque e treine os poderes fora da arena.")
+		return true
+	end
+	return false
+end
+
+-- Equipa o poder no próximo slot livre, ou tira se já estava equipado.
+local function onEquip(player: Player, powerId: unknown)
+	local power, profile = ownedPower(player, powerId)
+	if not power or not profile or blockedInArena(player) then
+		return
+	end
+	local index = table.find(profile.equipped, power.id)
+	if index then
+		table.remove(profile.equipped, index)
+	elseif not PowerMath.isUsable(power, AuraMath.getBand(profile.peakAura).index) then
+		-- Cópias roubadas e poderes de quem caiu voltam a ser usáveis quando a faixa alcança a do poder.
+		notify:FireClient(player, `{power.name} volta a ser usável na faixa {Bands[power.band].name}.`)
+		return
+	elseif #profile.equipped >= Arena.MaxEquipped then
+		notify:FireClient(player, `Você já tem {Arena.MaxEquipped} poderes equipados. Tire um antes.`)
+		return
+	else
+		table.insert(profile.equipped, power.id)
+	end
+	AuraService.pushState(player)
+end
+
+-- Sobe 1 nível de treino pagando o preço do poder vezes o nível atual.
+local function onTrain(player: Player, powerId: unknown)
+	local power, profile, level = ownedPower(player, powerId)
+	if not power or not profile or not level or blockedInArena(player) then
+		return
+	end
+	local cost = PowerMath.trainCost(power, level)
+	if not cost then
+		return
+	end
+	if profile.aura < cost then
+		notify:FireClient(player, `Treinar {power.name} custa {Format.short(cost)} de aura.`)
+		return
+	end
+	profile.aura -= cost
+	profile.powers[power.id] = level + 1
+	notify:FireClient(player, `{power.name} subiu para o nível {level + 1}!`)
 	AuraService.pushState(player)
 	DataService.saveNow(player)
 end
@@ -228,6 +302,8 @@ end
 
 function PowerService.start()
 	buyPower.OnServerEvent:Connect(onBuy)
+	equipPower.OnServerEvent:Connect(onEquip)
+	trainPower.OnServerEvent:Connect(onTrain)
 	DataService.onLoaded(renderAll)
 	for _, player in Players:GetPlayers() do
 		local profile = DataService.get(player)

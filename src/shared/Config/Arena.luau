@@ -40,4 +40,19 @@ return {
 
 	-- Fim da rodada: quem mais derrotou leva 10% da aura com que entrou.
 	TopKillerBonus = 0.10,
+
+	-- Poderes na arena (GDD: "Poderes"). Dano, custo por disparo e recarga vêm de cada poder (Config/Powers).
+	MaxEquipped = 3,
+	AutoAimRadius = 40, -- mira automática, só no celular: o inimigo mais próximo nesse raio
+	DrainAuraPerHit = 0.01, -- Dreno (lendários): cada acerto também rouba 1% da aura carregada do alvo
+
+	-- Números de cada modelo de comportamento (studs e segundos).
+	Models = {
+		["Projétil"] = { Speed = 90, Range = 80, Radius = 3 }, -- voa reto e acerta o primeiro alvo
+		["Investida"] = { Distance = 28, Duration = 0.3, HitRadius = 5 }, -- avança e acerta quem está no caminho
+		["Área"] = { Radius = 14 }, -- explosão ao redor do jogador
+		["Feixe"] = { Duration = 1.5, Ticks = 6, Range = 45, Width = 3 }, -- o dano do poder se divide pelos ticks
+		["Impacto"] = { MaxDistance = 30, AirTime = 0.6, Radius = 12 }, -- salta até a mira e causa dano ao cair
+		["Dreno"] = { Range = 35, Duration = 2, Hits = 4 }, -- prende no alvo; o dano se divide pelos acertos
+	},
 }

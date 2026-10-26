@@ -97,6 +97,7 @@ function AuraService.pushState(player: Player)
 		generatorLevel = profile.generatorLevel,
 		upgradeCost = AuraMath.upgradeCost(profile.generatorLevel),
 		powers = profile.powers,
+		equipped = profile.equipped,
 		hasShield = AuraService.hasShield(profile),
 		-- Horários do portão em workspace:GetServerTimeNow() (ver GateService).
 		gateUntil = plot and plot:GetAttribute("GateUntil") or 0,

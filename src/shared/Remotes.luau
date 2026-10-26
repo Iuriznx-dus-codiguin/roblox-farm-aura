@@ -14,6 +14,10 @@ local EVENTS = {
 	"ArenaState", -- servidor -> cliente: fase da rodada, fila, vivos e se o jogador está lutando
 	"Attack", -- cliente -> servidor: golpe do ataque básico
 	"Dodge", -- cliente -> servidor: esquiva (o avanço é feito no cliente)
+	"EquipPower", -- cliente -> servidor: equipar ou tirar o poder de id dado (até 3)
+	"TrainPower", -- cliente -> servidor: treinar o poder de id dado (+1 nível)
+	"UsePower", -- cliente -> servidor: disparar o poder do slot (1 a 3) na direção do ponto de mira
+	"PowerFx", -- servidor -> clientes: um poder foi disparado; o cliente desenha o efeito e move quem disparou
 }
 
 local Remotes = {}

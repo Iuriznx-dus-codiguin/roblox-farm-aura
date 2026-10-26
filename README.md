@@ -53,6 +53,15 @@ mudar, apague `Workspace.Plots` e `Workspace.Plaza` e rode o comando de novo.
 - A arena fica em Z = 1500, fora do Baseplate. Se o place tem uma arena antiga (gerada em Z = 1000), apague
   `Workspace.Arena` e `Workspace.ArenaPortal` e rode `require(game.ServerScriptService.Server.ArenaBuilder).build(workspace)`.
 
+## Testar os poderes
+
+1. Em Play, dê aura ao jogador pela Command Bar do servidor (exemplo: 2 milhões, que leva até a faixa Eclipse):
+   `require(game.ServerScriptService.Server.Services.AuraService).addAura(game.Players:GetPlayers()[1], 2e6)`
+2. Na tela Poderes, compre, treine e equipe até 3 poderes. Eles aparecem na barra embaixo, com o custo de cada disparo.
+3. Entre na arena. Teclas 1, 2 e 3 (ou tocar no slot) disparam na direção do mouse; no celular a mira trava no
+   inimigo mais próximo. Cada disparo gasta aura e tem recarga.
+4. Dano e roubo só aparecem com 2 jogadores (Test > Clients and Servers), porque os poderes só acertam quem está lutando.
+
 ## Estrutura
 
 ```

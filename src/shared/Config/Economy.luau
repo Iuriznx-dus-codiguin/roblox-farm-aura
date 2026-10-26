@@ -20,6 +20,12 @@ return {
 		FractionWithPass = 0.50,
 	},
 
+	Training = {
+		MaxLevel = 5, -- poderes treinam do nível 1 ao 5
+		DamagePerLevel = 0.10, -- cada nível acima do 1 dá +10% de dano
+		-- Subir de nível custa o preço do poder vezes o nível atual (ver PowerMath.trainCost).
+	},
+
 	Rebirth = {
 		BonusPerRebirth = 0.25, -- +25% de geração permanente por rebirth
 	},
