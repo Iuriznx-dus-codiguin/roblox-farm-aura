@@ -97,6 +97,7 @@ function AuraService.pushState(player: Player)
 		generatorLevel = profile.generatorLevel,
 		upgradeCost = AuraMath.upgradeCost(profile.generatorLevel),
 		powers = profile.powers,
+		equipped = profile.equipped,
 		hasShield = AuraService.hasShield(profile),
 		-- Horários do portão em workspace:GetServerTimeNow() (ver GateService).
 		gateUntil = plot and plot:GetAttribute("GateUntil") or 0,
@@ -194,6 +195,25 @@ function AuraService.start()
 
 	upgradeGenerator.OnServerEvent:Connect(onUpgrade)
 	DataService.onLoaded(onProfileLoaded)
+
+	-- Teste no Studio: `jogador:SetAttribute("TesteDarAura", 2e6)` na Command Bar (contexto Server) dá aura
+	-- pelo caminho real. O require da Command Bar cria outra cópia dos módulos, então chamar addAura por lá
+	-- não chega ao perfil do jogo. Fora do Studio o atributo é ignorado.
+	if RunService:IsStudio() then
+		local function watchTestAura(player: Player)
+			player:GetAttributeChangedSignal("TesteDarAura"):Connect(function()
+				local amount = player:GetAttribute("TesteDarAura")
+				if type(amount) == "number" and amount > 0 then
+					player:SetAttribute("TesteDarAura", nil)
+					AuraService.addAura(player, amount)
+				end
+			end)
+		end
+		Players.PlayerAdded:Connect(watchTestAura)
+		for _, player in Players:GetPlayers() do
+			watchTestAura(player)
+		end
+	end
 	Players.PlayerRemoving:Connect(function(player)
 		lastTouch[player] = nil
 	end)

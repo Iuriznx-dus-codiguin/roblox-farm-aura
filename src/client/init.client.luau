@@ -1,5 +1,5 @@
 --!strict
--- Ponto de entrada do cliente: liga os remotes ao HUD e à tela de poderes.
+-- Ponto de entrada do cliente: liga os remotes ao HUD, à tela e à barra de poderes e à arena.
 
 local Players = game:GetService("Players")
 local ProximityPromptService = game:GetService("ProximityPromptService")
@@ -9,6 +9,8 @@ local Remotes = require(ReplicatedStorage:WaitForChild("Shared"):WaitForChild("R
 local Hud = require(script.Hud)
 local PowerShop = require(script.PowerShop)
 local ArenaHud = require(script.ArenaHud)
+local PowerBar = require(script.PowerBar)
+local PowerFx = require(script.PowerFx)
 
 local player = Players.LocalPlayer
 local upgradeGenerator = Remotes.event("UpgradeGenerator")
@@ -22,6 +24,13 @@ end, function()
 end)
 local shop = PowerShop.create(function(powerId)
 	buyPower:FireServer(powerId)
+end, function(powerId)
+	Remotes.event("EquipPower"):FireServer(powerId)
+end, function(powerId)
+	Remotes.event("TrainPower"):FireServer(powerId)
+end)
+local powerBar = PowerBar.create(function(slot, aim)
+	Remotes.event("UsePower"):FireServer(slot, aim)
 end)
 local arenaHud = ArenaHud.create(function()
 	Remotes.event("JoinArena"):FireServer()
@@ -30,11 +39,21 @@ end, function()
 end, function()
 	Remotes.event("Dodge"):FireServer()
 end)
-Remotes.event("ArenaState").OnClientEvent:Connect(arenaHud.render)
+Remotes.event("ArenaState").OnClientEvent:Connect(function(state: ArenaHud.ArenaState)
+	arenaHud.render(state)
+	powerBar.setFighting(state.fighting)
+end)
+Remotes.event("PowerFx").OnClientEvent:Connect(function(cast: PowerFx.Cast)
+	PowerFx.play(cast)
+	if cast.caster == player then
+		powerBar.onCast(cast.powerId)
+	end
+end)
 
 Remotes.event("StateChanged").OnClientEvent:Connect(function(state: Hud.State)
 	hud.render(state)
 	shop.render(state)
+	powerBar.render(state)
 end)
 Remotes.event("Notify").OnClientEvent:Connect(hud.toast)
 

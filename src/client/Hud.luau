@@ -19,7 +19,8 @@ export type State = {
 	ratePerSecond: number,
 	generatorLevel: number,
 	upgradeCost: number?,
-	powers: { [string]: number },
+	powers: { [string]: number }, -- id do poder -> nível de treino
+	equipped: { string }, -- até 3 ids, na ordem dos slots
 	hasShield: boolean,
 	gateUntil: number,
 	gateReadyAt: number,
