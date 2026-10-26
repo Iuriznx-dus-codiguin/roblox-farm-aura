@@ -25,6 +25,10 @@ function Push.horizontal(root: BasePart, velocity: Vector3, seconds: number)
 	task.delay(seconds, function()
 		mover:Destroy()
 		attachment:Destroy()
+		-- Para o deslize: sem isto o personagem ainda escorrega uns 4 a 5 studs enquanto o Humanoid freia.
+		if root.Parent then
+			root.AssemblyLinearVelocity = Vector3.new(0, root.AssemblyLinearVelocity.Y, 0)
+		end
 	end)
 end
 
